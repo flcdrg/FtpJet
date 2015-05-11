@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FtpJet.Models;
 
 namespace FtpJet.Controllers
 {
@@ -10,7 +11,13 @@ namespace FtpJet.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var model = new HomeModel();
+            model.Locations = new Dictionary<string, string>() {
+                {"Adelaide", "ADL" },
+                {"Sydney", "SYD"}
+            };
+
+            return View(model);
         }
 
         public ActionResult About()
