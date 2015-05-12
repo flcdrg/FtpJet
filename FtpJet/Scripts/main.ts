@@ -3,9 +3,12 @@
 $(() => {
     $('#Search').on('click', (eventObject: JQueryEventObject) => {
         $.getJSON(base + 'api/flights')
-            .done((d: string): void => {
-            d
-            console.log(d);
+            .done((d: any[]): void => {
+            
+            var start = moment(d[0].start);
+            console.log(start.format());
+            var finish = moment(d[0].finish);
+            console.log(finish.format());
         });
     });
 });
