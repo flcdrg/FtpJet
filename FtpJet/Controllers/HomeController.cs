@@ -9,14 +9,17 @@ namespace FtpJet.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
         public ActionResult Index()
         {
             var model = new HomeModel();
-            model.Locations = new Dictionary<string, string>() {
-                {"Adelaide", "ADL" },
-                {"Sydney", "SYD"}
-            };
 
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Index(HomeModel model)
+        {
             return View(model);
         }
 
