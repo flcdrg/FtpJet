@@ -7,7 +7,7 @@ var myViewModel = {
 $(() => {
     $('#Search').on('click', (eventObject: JQueryEventObject) => {
         $.getJSON(base + 'api/flights')
-            .done((data: {code: string, start: string, finish: string}[]): void => {
+            .done((data: {code: string, start: string, finish: string, duration: string}[]): void => {
 
             data.forEach((row) => {
                 var [date, timezone] = row.start.split(' ');
@@ -21,7 +21,10 @@ $(() => {
                 myViewModel.flights.push({
                     code: row.code,
                     departure: start.format(),
-                    arrival: finish.format()
+                    departureInfo: `DST: ${start.isDST()}`,
+                    arrival: finish.format(),
+                    arrivalInfo: `DST: ${finish.isDST() }`,
+                    duration: row.duration
                 });
             });
         });

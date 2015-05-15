@@ -13,6 +13,7 @@ namespace FtpJet.Controllers
         public string Code { get; set; }
         public ZonedDateTime Start { get; set; }
         public ZonedDateTime Finish { get; set; }
+        public Duration Duration { get; set; }
     }
 
     public class FlightsController : ApiController
@@ -23,10 +24,10 @@ namespace FtpJet.Controllers
             var adelaideTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull("Australia/Adelaide");
             var sydneyTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull("Australia/Sydney");
 
-            var start = adelaideTz.AtLeniently(LocalDateTime.FromDateTime(new DateTime(2015, 5, 12, 9, 0, 0)));
-            var finish = sydneyTz.AtLeniently(LocalDateTime.FromDateTime(new DateTime(2015, 5, 12, 11, 30, 0)));
+            var start = adelaideTz.AtLeniently(LocalDateTime.FromDateTime(new DateTime(2015, 10, 3, 22, 0, 0)));
+            var finish = sydneyTz.AtLeniently(LocalDateTime.FromDateTime(new DateTime(2015, 10, 4, 9, 30, 0)));
 
-            return new FlightDto[] { new FlightDto() { Code = "QF0", Start = start, Finish = finish } };
+            return new FlightDto[] { new FlightDto() { Code = "QF0", Start = start, Finish = finish, Duration = (finish.ToInstant() - start.ToInstant()) } };
         }
 
         // GET: api/Flights/5
