@@ -30,7 +30,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Code</th>
@@ -38,7 +38,13 @@
                         <th>Arrival</th>
                     </tr>
                 </thead>
-                <tbody id="flights"></tbody>
+                <tbody data-bind="foreach: flights">
+                    <tr>
+                        <td data-bind="text: code"></td>
+                        <td data-bind="text: departure"></td>
+                        <td data-bind="text: arrival"></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
@@ -48,6 +54,7 @@
 {
 <script src="~/bower_components/moment/min/moment.min.js"></script>
 <script src="~/bower_components/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
+<script src="~/bower_components/knockout/dist/knockout.js"></script>
     @Scripts.Render("~/scripts/main.js")
 }
 

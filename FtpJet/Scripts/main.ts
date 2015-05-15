@@ -1,5 +1,9 @@
 ﻿declare var base: string;
 
+var myViewModel = {
+    flights: ko.observableArray()
+};
+
 $(() => {
     $('#Search').on('click', (eventObject: JQueryEventObject) => {
         $.getJSON(base + 'api/flights')
@@ -13,9 +17,17 @@ $(() => {
                 [date, timezone] = row.finish.split(' ');
 
                 var finish = moment(date).tz(timezone);
-                $('#flights').append(`<tr><td>${row.code}</td><td>${start}</td><td>${finish}</td></tr>`);
 
+                myViewModel.flights.push({
+                    code: row.code,
+                    departure: start.format(),
+                    arrival: finish.format()
+                });
             });
         });
     });
+
+    ko.applyBindings(myViewModel);
 });
+
+
