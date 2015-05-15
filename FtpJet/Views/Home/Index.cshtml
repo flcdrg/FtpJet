@@ -30,17 +30,24 @@
 
     <div class="row">
         <div class="col-md-12">
-            <ol id="flights">
-
-            </ol>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                    </tr>
+                </thead>
+                <tbody id="flights"></tbody>
+            </table>
         </div>
     </div>
 }
 
 @section Scripts
 {
-    <script src="~/bower_components/momentjs/min/moment.min.js"></script>
-<script src="~/bower_components/moment-timezone/moment-timezone.js"></script>
+<script src="~/bower_components/moment/min/moment.min.js"></script>
+<script src="~/bower_components/moment-timezone/builds/moment-timezone-with-data.min.js"></script>
     @Scripts.Render("~/scripts/main.js")
 }
 
