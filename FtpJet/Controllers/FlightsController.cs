@@ -13,8 +13,8 @@ namespace FtpJet.Controllers
         public string Code { get; set; }
         public string Source { get; set; }
         public string Destination { get; set; }
-        public string Start { get; set; }
-        public string Finish { get; set; }
+        public ZonedDateTime Start { get; set; }
+        public ZonedDateTime Finish { get; set; }
         public Duration Duration { get; set; }
     }
 
@@ -55,8 +55,8 @@ namespace FtpJet.Controllers
                     yield return new FlightDto()
                     {
                         Code = r.Id.ToString(),
-                        Start = zonedStart.ToString("G", CultureInfo.CurrentCulture),
-                        Finish = zonedFinish.ToString("G", CultureInfo.CurrentCulture),
+                        Start = zonedStart,
+                        Finish = zonedFinish,
                         Duration = (zonedFinish.ToInstant() - zonedStart.ToInstant()),
                         Source = "Adelaide",
                         Destination = r.Name
