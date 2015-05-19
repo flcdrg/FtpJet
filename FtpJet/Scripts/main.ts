@@ -4,33 +4,52 @@ var myViewModel = {
     flights: ko.observableArray()
 };
 
-$(() => {
-    $('#Search').on('click', (eventObject: JQueryEventObject) => {
-        $.getJSON(base + 'api/flights')
-            .done((data: {code: string, start: string, finish: string, duration: string}[]): void => {
+function loadFlights(startDate?: string) {
+    var url = base + 'api/flights';
 
-            data.forEach((row) => {
-                var [date, timezone] = row.start.split(' ');
+    if (startDate != null) {
+        url += '?startDate=' + startDate;
+    }
 
-                var start = moment(date).tz(timezone);
+    $.getJSON(url)
+        .done((data: { code: string, source: string, destination: string, start: string, finish: string, duration: string }[]): void => {
 
-                [date, timezone] = row.finish.split(' ');
+        data.forEach((row) => {
+            var [date, timezone] = row.start.split(' ');
 
-                var finish = moment(date).tz(timezone);
+            var start = moment(date).tz(timezone);
 
-                myViewModel.flights.push({
-                    code: row.code,
-                    departure: start.format(),
-                    departureInfo: `DST: ${start.isDST()}`,
-                    arrival: finish.format(),
-                    arrivalInfo: `DST: ${finish.isDST() }`,
-                    duration: row.duration
-                });
+            [date, timezone] = row.finish.split(' ');
+
+            var finish = moment(date).tz(timezone);
+
+            myViewModel.flights.push({
+                code: row.code,
+                source: row.source,
+                destination: row.destination,
+                departure: start.format(),
+                departureInfo: `DST: ${start.isDST() }`,
+                arrival: finish.format(),
+                arrivalInfo: `DST: ${finish.isDST() }`,
+                duration: row.duration
             });
         });
     });
+}
+
+$(() => {
+    var startDate = moment().format('YYYY-MM-DD');
+    $('#StartDate').val(startDate);
+
+    $('#Search').on('click', (eventObject: JQueryEventObject) => {
+        var startDate = $('#StartDate').val();
+
+        loadFlights(startDate);
+    });
 
     ko.applyBindings(myViewModel);
+
+    loadFlights(startDate);
 });
 
 

@@ -12,18 +12,9 @@
 {
 
     <div class="row">
-        <div class="col-md-4">
-            <h2>Origin</h2>
-            @Html.DropDownListFor(m => m.Origin, new SelectList(Model.Locations, "Value", "Key"))<br />
-
-        </div>
-        <div class="col-md-4">
-            <h2>Destination</h2>
-            @Html.DropDownListFor(m => m.Destination, new SelectList(Model.Locations, "Value", "Key"))<br />
-
-        </div>
-        <div class="col-md-4">
-            <input type="button" value="Search" id="Search" />
+        <div class="col-md-12">
+            <input type="datetime-local" id="StartDate"  />
+            <input type="button" value="Update" id="Search" />
         </div>
 
     </div>
@@ -34,6 +25,8 @@
                 <thead>
                     <tr>
                         <th>Code</th>
+                        <th>Source</th>
+                        <th>Destination</th>
                         <th>Departure</th>
                         <th>Arrival</th>
                         <th>Duration</th>
@@ -42,6 +35,8 @@
                 <tbody data-bind="foreach: flights">
                     <tr>
                         <td data-bind="text: code"></td>
+                        <td data-bind="text: source"></td>
+                        <td data-bind="text: destination"></td>
                         <td data-bind="text: departure, attr: { title: departureInfo}"></td>
                         <td data-bind="text: arrival, attr: { title: arrivalInfo}"></td>
                         <td data-bind="text: duration"></td>
