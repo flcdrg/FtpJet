@@ -11,6 +11,8 @@ function loadFlights(startDate?: string) {
         url += '?startDate=' + startDate;
     }
 
+    myViewModel.flights.destroyAll();
+
     $.getJSON(url)
         .done((data: { code: string, source: string, destination: string, start: string, finish: string, duration: string }[]): void => {
 
