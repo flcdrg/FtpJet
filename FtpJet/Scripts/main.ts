@@ -4,12 +4,10 @@ var myViewModel = {
     flights: ko.observableArray()
 };
 
-function loadFlights(startDate?: string) {
+function loadFlights(startDate: string, duration: number) {
     var url = base + 'api/flights';
 
-    if (startDate != null) {
-        url += '?startDate=' + startDate;
-    }
+    url += `?startDate=${startDate}&duration=${duration}`;
 
     $.getJSON(url)
         .done((data: { code: string, source: string, destination: string, start: string, finish: string, duration: string }[]): void => {
@@ -22,7 +20,6 @@ function loadFlights(startDate?: string) {
             var [date2, timezone2] = row.finish.split(' ', 2);
 
             var finish = moment.tz(date2, timezone2);
-            console.log(finish);
 
             var existing = myViewModel.flights().filter((value: any) => { return value.code == row.code });
 
@@ -58,12 +55,13 @@ $(() => {
     $('#Search').on('click', (eventObject: JQueryEventObject) => {
         var startDate = $('#StartDate').val();
 
-        loadFlights(startDate);
+        
+        loadFlights(startDate, $('#Duration').val());
     });
 
     ko.applyBindings(myViewModel);
 
-    loadFlights(startDate);
+    loadFlights(startDate, $('#Duration').val());
 });
 
 

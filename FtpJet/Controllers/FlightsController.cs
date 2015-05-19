@@ -21,7 +21,7 @@ namespace FtpJet.Controllers
     public class FlightsController : ApiController
     {
         // GET: api/Flights
-        public IEnumerable<FlightDto> Get([ModelBinder(typeof(LocalDateModelBinder))] LocalDate startDate)
+        public IEnumerable<FlightDto> Get([ModelBinder(typeof(LocalDateModelBinder))] LocalDate startDate, int duration)
         {
             var adelaideTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull("Australia/Adelaide");
 
@@ -49,7 +49,7 @@ namespace FtpJet.Controllers
                     //var localFinish = localStart.PlusHours(4);
 
                     var zonedStart = adelaideTz.AtLeniently(localStart);
-                    var inst = zonedStart.ToInstant().Plus(Duration.FromHours(4));
+                    var inst = zonedStart.ToInstant().Plus(Duration.FromHours(duration));
                     var zonedFinish = inst.InZone(destTz);
 
                     yield return new FlightDto()
