@@ -28,18 +28,37 @@ namespace FtpJet.Controllers
             {
                 var q = from r in db.Routes
                         where r.Airport_SourceAirport.FaaIata == "ADL"
-                        select new { r.Airport_DestinationAirport.Name, r.Airport_DestinationAirport.Tzdb, r.Airport_DestinationAirport.FaaIata, r.Id };
+                        select new
+                        {
+                            r.Airport_DestinationAirport.Name,
+                            r.Airport_DestinationAirport.Tzdb,
+                            r.Airport_DestinationAirport.FaaIata,
+                            r.Id
+                        };
 
                 var results = q.ToList();
+
+                int hours = 0;
 
                 foreach (var r in results)
                 {
                     var destTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(r.Tzdb);
 
-                    var start = adelaideTz.AtLeniently(startDate.At(new LocalTime(22, 0))); // LocalDateTime.FromDateTime(new DateTime(2015, 10, 3, 22, 0, 0)));
-                    var finish = destTz.AtLeniently(startDate.PlusDays(1).At(new LocalTime(9, 30))); // LocalDateTime.FromDateTime(new DateTime(2015, 10, 4, 9, 30, 0)));
+                    var localStart = startDate.At(new LocalTime(0, 0)).PlusHours(hours++);
+                    var localFinish = localStart.PlusHours(4);
 
-                    yield return new FlightDto() { Code = r.Id.ToString(), Start = start, Finish = finish, Duration = (finish.ToInstant() - start.ToInstant()), Source = "Adelaide", Destination = r.Name };
+                    var zonedStart = adelaideTz.AtLeniently(localStart);
+                    var zonedFinish = zonedStart.ToInstant().Plus(Duration.FromHours(4)).InZone(destTz);
+
+                    yield return new FlightDto()
+                    {
+                        Code = r.Id.ToString(),
+                        Start = zonedStart,
+                        Finish = zonedFinish,
+                        Duration = (zonedFinish.ToInstant() - zonedStart.ToInstant()),
+                        Source = "Adelaide",
+                        Destination = r.Name
+                    };
                 }
             }
         }

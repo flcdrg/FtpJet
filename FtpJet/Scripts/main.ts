@@ -11,7 +11,7 @@ function loadFlights(startDate?: string) {
         url += '?startDate=' + startDate;
     }
 
-    myViewModel.flights.destroyAll();
+    //myViewModel.flights.destroyAll();
 
     $.getJSON(url)
         .done((data: { code: string, source: string, destination: string, start: string, finish: string, duration: string }[]): void => {
@@ -25,16 +25,29 @@ function loadFlights(startDate?: string) {
 
             var finish = moment(date).tz(timezone);
 
-            myViewModel.flights.push({
-                code: row.code,
-                source: row.source,
-                destination: row.destination,
-                departure: start.format(),
-                departureInfo: `DST: ${start.isDST() }`,
-                arrival: finish.format(),
-                arrivalInfo: `DST: ${finish.isDST() }`,
-                duration: row.duration
-            });
+            var existing = myViewModel.flights().filter((value: any) => { return value.code == row.code });
+
+            if (existing.length == 0) {
+
+                myViewModel.flights.push({
+                    code: row.code,
+                    source: row.source,
+                    destination: row.destination,
+                    departure: ko.observable(start.format()),
+                    departureInfo: ko.observable(`DST: ${start.isDST() }`),
+                    arrival: ko.observable(finish.format()),
+                    arrivalInfo: ko.observable(`DST: ${finish.isDST() }`),
+                    duration: ko.observable(row.duration)
+                });
+            } else {
+                existing.forEach((value: any) => {
+                    value.departure(start.format());
+                    value.departureInfo(`DST: ${start.isDST() }`);
+                    value.arrival(finish.format());
+                    value.arrivalInfo(`DST: ${finish.isDST() }`);
+                    value.duration(row.duration);
+                });
+            }
         });
     });
 }
