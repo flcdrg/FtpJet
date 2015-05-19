@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
@@ -12,8 +13,8 @@ namespace FtpJet.Controllers
         public string Code { get; set; }
         public string Source { get; set; }
         public string Destination { get; set; }
-        public ZonedDateTime Start { get; set; }
-        public ZonedDateTime Finish { get; set; }
+        public string Start { get; set; }
+        public string Finish { get; set; }
         public Duration Duration { get; set; }
     }
 
@@ -45,16 +46,17 @@ namespace FtpJet.Controllers
                     var destTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(r.Tzdb);
 
                     var localStart = startDate.At(new LocalTime(0, 0)).PlusHours(hours++);
-                    var localFinish = localStart.PlusHours(4);
+                    //var localFinish = localStart.PlusHours(4);
 
                     var zonedStart = adelaideTz.AtLeniently(localStart);
-                    var zonedFinish = zonedStart.ToInstant().Plus(Duration.FromHours(4)).InZone(destTz);
+                    var inst = zonedStart.ToInstant().Plus(Duration.FromHours(4));
+                    var zonedFinish = inst.InZone(destTz);
 
                     yield return new FlightDto()
                     {
                         Code = r.Id.ToString(),
-                        Start = zonedStart,
-                        Finish = zonedFinish,
+                        Start = zonedStart.ToString("G", CultureInfo.CurrentCulture),
+                        Finish = zonedFinish.ToString("G", CultureInfo.CurrentCulture),
                         Duration = (zonedFinish.ToInstant() - zonedStart.ToInstant()),
                         Source = "Adelaide",
                         Destination = r.Name

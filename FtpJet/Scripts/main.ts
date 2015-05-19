@@ -11,19 +11,18 @@ function loadFlights(startDate?: string) {
         url += '?startDate=' + startDate;
     }
 
-    //myViewModel.flights.destroyAll();
-
     $.getJSON(url)
         .done((data: { code: string, source: string, destination: string, start: string, finish: string, duration: string }[]): void => {
 
         data.forEach((row) => {
-            var [date, timezone] = row.start.split(' ');
+            var [date, timezone] = row.start.split(' ', 2);
 
-            var start = moment(date).tz(timezone);
+            var start = moment.tz(date, timezone);
 
-            [date, timezone] = row.finish.split(' ');
+            var [date2, timezone2] = row.finish.split(' ', 2);
 
-            var finish = moment(date).tz(timezone);
+            var finish = moment.tz(date2, timezone2);
+            console.log(finish);
 
             var existing = myViewModel.flights().filter((value: any) => { return value.code == row.code });
 
@@ -54,7 +53,7 @@ function loadFlights(startDate?: string) {
 
 $(() => {
     var startDate = moment().format('YYYY-MM-DD');
-    $('#StartDate').val(startDate);
+    $('#StartDate').prepend(`<option selected='true'>${startDate}</option>`);
 
     $('#Search').on('click', (eventObject: JQueryEventObject) => {
         var startDate = $('#StartDate').val();
