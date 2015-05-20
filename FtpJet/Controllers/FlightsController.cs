@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
+using FtpJet.Models;
 using NodaTime;
 
 namespace FtpJet.Controllers
 {
-    public class FlightDto
-    {
-        public string Code { get; set; }
-        public string Source { get; set; }
-        public string Destination { get; set; }
-        public ZonedDateTime Start { get; set; }
-        public ZonedDateTime Finish { get; set; }
-        public Duration Duration { get; set; }
-    }
-
     public class FlightsController : ApiController
     {
         // GET: api/Flights
@@ -46,10 +35,12 @@ namespace FtpJet.Controllers
                     var destTz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(r.Tzdb);
 
                     var localStart = startDate.At(new LocalTime(0, 0)).PlusHours(hours++);
-                    //var localFinish = localStart.PlusHours(4);
-
                     var zonedStart = adelaideTz.AtLeniently(localStart);
+
+                    // add duration to Instant
                     var inst = zonedStart.ToInstant().Plus(Duration.FromHours(duration));
+
+                    // translate instant back to destination time zone
                     var zonedFinish = inst.InZone(destTz);
 
                     yield return new FlightDto()
